@@ -1,0 +1,19 @@
+{
+  "name": "PokeEmeraldGameBot",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pokemon Twitch Gamebot",
+  "main": "index.js",
+  "author": "Dark Princess",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "twitch": "^4.6.0",
+    "twitch-auth": "^4.6.0",
+    "twitch-eventsub": "^4.6.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.5"
+  }
+}

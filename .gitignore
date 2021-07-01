@@ -1,0 +1,9 @@
+# Do not inlcude node_modules
+node_modules/
+
+# Do not include media which are extra files in the project folder
+media/
+
+# Do not include .env, this contains highly secretive stuff like passwords
+# Which can be detrimental if gotten out
+.env
