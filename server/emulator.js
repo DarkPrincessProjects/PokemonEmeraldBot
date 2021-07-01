@@ -18,7 +18,12 @@ class Emulator extends EventEmitter
     }
 
     // Real constructor that we can call and wait to complete
-    async init() {
+    async init(app) {
+
+        this.app = app;
+
+        // Set socket to default value indicating no connection exists
+        this.socket = null;
 
         // Create Server
         this.server = Net.createServer();
@@ -57,6 +62,10 @@ class Emulator extends EventEmitter
     }
 
     async onEnd() {
+
+        // Clear socket connection
+        this.socket = null;
+
         console.log(`Emulator connection ended`);
     }
 };

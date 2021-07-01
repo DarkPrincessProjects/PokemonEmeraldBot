@@ -15,8 +15,10 @@ class TwitchEventSub extends EventEmitter
 	}
 
 	// Real constructor that we can call and wait to complete
-	async init() {
+	async init(app) {
 		console.log("Connecting to Twitch...");
+
+		this.app = app;
 
 		// Save client to class
 		this.client = client;

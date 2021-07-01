@@ -26,8 +26,8 @@ class App extends EventEmitter
 		this.emulator = new Emulator();
 
 		// Initialize it
-		await this.twitchEventSub.init();
-		await this.emulator.init();
+		await this.twitchEventSub.init(this);
+		await this.emulator.init(this);
 
 		// Done
 		console.log("Done! Server is running...");
