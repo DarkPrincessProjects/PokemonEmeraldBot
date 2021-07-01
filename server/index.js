@@ -1,31 +1,38 @@
-console.log("Starting...");
-console.log("Setting Up...");
-
 // Load secret data
 require('dotenv').config()
 
+// Load Event Emitter
+const EventEmitter = require('events');
+
 // Load Twitch EventSub Lister
-const eventsub = require("./eventsub");
+const { TwitchEventSub } = require("./eventsub");
 
 // Start Emulator server
-const emulator = require("./emulator");
+const { Emulator } = require("./emulator");
 
-// Main Function
-async function main() {
+class App extends EventEmitter
+{
+	// Not used because we need an async function thats not a constructor
+	constructor() {
+		super();
+	}
 
-	console.log("Connecting to Twitch...");
+	async init() {
+		console.log("Starting...");
+		console.log("Setting Up...");
 
-	// Connect Eventsub Listener
-	await eventsub.listen();
+		// Instantiate TwitchEventSub
+		this.twitchEventSub = new TwitchEventSub();
+		this.emulator = new Emulator();
 
-	console.log("Listening to Twitch Point Redemptions...");
+		// Initialize it
+		await this.twitchEventSub.init();
+		await this.emulator.init();
 
-	// Listen in on point redemptions
-	await eventsub.subscribeToChannelRedemptionAddEvents(process.env.TWITCH_USERID, e => {
-		console.log(`${e.userDisplayName} just redeemed ${e.rewardTitle}`);
-	});
+		// Done
+		console.log("Done! Server is running...");
+	}
+};
 
-	console.log("Done! Server is running...");
-}
-
-main();
+const app = new App();
+app.init();

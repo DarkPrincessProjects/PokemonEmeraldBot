@@ -1,25 +1,66 @@
 // You must use emulator BizHawk 2.4.2, modern versions are bugged and don't
 // work
 
+// Load Event Emitter
+const EventEmitter = require('events');
+
+// Load HTTP Server
 const Net = require('net');
 
-const server = Net.createServer();
+// Util for Promisfy
+const util = require("util");
 
-server.listen(process.env.EMULATOR_PORT, () => {
-    console.log(`Ready for emulator to connect to localhost:${process.env.EMULATOR_PORT}`);
-});
+class Emulator extends EventEmitter
+{
+    // Not used because we need an async function thats not a constructor
+    constructor() {
+        super();
+    }
 
-server.on('connection', function(socket) {
-    console.log('Emulator connected...');
-    console.log('Connection status: ' + socket.readyState);
-    socket.setEncoding("utf8");
+    // Real constructor that we can call and wait to complete
+    async init() {
 
-    socket.on('data', function(chunk) {
-        console.log(`Emulator sent data: \n${chunk.toString()}`);
-        socket.write(chunk.toString());
-    });
+        // Create Server
+        this.server = Net.createServer();
 
-    socket.on('error', function(chunk) {
-        console.log(`Emulator connection crash`);
-    });
-});
+        // Convert callback to promise
+        this.server.listenAsync = util.promisify(this.server.listen);
+
+        // Establish Listeners
+        this.server.on('connection', this.onConnect.bind(this));
+
+        // Wait to establish listener
+        await this.server.listenAsync(process.env.EMULATOR_PORT);
+
+        console.log("Ready for emulator to connect to localhost: " + 
+            process.env.EMULATOR_PORT);
+    }
+
+    async onConnect(socket) {
+        console.log('Emulator connected...');
+        console.log('Connection status: ' + socket.readyState);
+
+        // Incomming messages are strings
+        socket.setEncoding("utf8");
+
+        // Save socket replacing old one, we only deal with one connection
+        this.socket = socket;
+
+        // Establish listeners
+        socket.on('data', this.onMsg.bind(this));
+        socket.on('error', this.onEnd.bind(this));
+    }
+
+    async onMsg(msg) {
+        console.log(`Emulator sent data: ${msg}`);
+        this.socket.write(msg);
+    }
+
+    async onEnd() {
+        console.log(`Emulator connection ended`);
+    }
+};
+
+module.exports = {
+    Emulator
+}
