@@ -18,6 +18,10 @@ Copy `.env.template` to a file called `.env` and fill out information there.
 Start the emulator with these arguments
 `--socket_ip=127.0.0.1 --socket_port=Port number in .env`
 
+## Status
+
+![status so far](https://user-images.githubusercontent.com/86629717/124178441-8f036c00-da7f-11eb-8015-ca8587050d71.png)
+
 ## License
 Apache 2.0 (Do whatever you want just credit me back)
 https://www.apache.org/licenses/LICENSE-2.0.txt
